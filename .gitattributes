@@ -1,0 +1,2 @@
+# Los scripts se ejecutan en Linux: con CRLF bash falla ($'': command not found).
+*.sh text eol=lf
