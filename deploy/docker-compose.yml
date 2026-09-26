@@ -1,0 +1,32 @@
+# Servicio completo con Redis. Escala los workers según el volumen:
+#   docker compose -f deploy/docker-compose.yml up -d --scale worker=4
+# La configuración (mailer.config.mjs) y los secretos (.env) van en deploy/.
+services:
+  redis:
+    image: redis:7-alpine
+    command: ["redis-server", "--appendonly", "yes"]   # la cola sobrevive a reinicios
+    volumes: [redis-data:/data]
+    restart: unless-stopped
+
+  api:
+    build: { context: .., dockerfile: deploy/Dockerfile }
+    command: ["--role", "api"]
+    env_file: .env
+    environment: { HOST: 0.0.0.0, PORT: 8080, REDIS_URL: "redis://redis:6379" }
+    volumes: ["./mailer.config.mjs:/app/mailer.config.mjs:ro"]
+    ports: ["127.0.0.1:8080:8080"]
+    depends_on: [redis]
+    restart: unless-stopped
+
+  worker:
+    build: { context: .., dockerfile: deploy/Dockerfile }
+    command: ["--role", "worker"]
+    env_file: .env
+    environment: { REDIS_URL: "redis://redis:6379" }
+    volumes: ["./mailer.config.mjs:/app/mailer.config.mjs:ro"]
+    depends_on: [redis]
+    restart: unless-stopped
+    stop_grace_period: 30s
+
+volumes:
+  redis-data:

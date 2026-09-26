@@ -1,0 +1,32 @@
+# Publica en GitHub Packages (privado) al crear un tag vX.Y.Z:
+#   npm version minor && git push --follow-tags
+name: Publicar paquete
+
+on:
+  push:
+    tags: ["v*"]
+
+jobs:
+  publish:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: write
+    services:
+      redis:
+        image: redis:7-alpine
+        ports: ["6379:6379"]
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 22
+          registry-url: https://npm.pkg.github.com
+          scope: "@juanparrado19"
+      - run: npm ci
+      - run: npm test
+        env:
+          REDIS_URL: redis://127.0.0.1:6379
+      - run: npm publish
+        env:
+          NODE_AUTH_TOKEN: ${{ secrets.GITHUB_TOKEN }}

@@ -1,0 +1,91 @@
+{
+  "name": "@juanparrado19/mailer",
+  "version": "0.1.0",
+  "description": "Librería y servicio de envío de correos reutilizable: transportes intercambiables (SMTP, Resend), plantillas, reintentos, colas (memoria o Redis) y servidor HTTP con API keys y formularios públicos.",
+  "license": "UNLICENSED",
+  "private": false,
+  "type": "module",
+  "engines": {
+    "node": ">=20"
+  },
+  "main": "./dist/index.cjs",
+  "module": "./dist/index.js",
+  "types": "./dist/index.d.ts",
+  "exports": {
+    ".": {
+      "import": {
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
+      },
+      "require": {
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
+      }
+    },
+    "./queue": {
+      "import": {
+        "types": "./dist/queue/index.d.ts",
+        "default": "./dist/queue/index.js"
+      },
+      "require": {
+        "types": "./dist/queue/index.d.cts",
+        "default": "./dist/queue/index.cjs"
+      }
+    },
+    "./server": {
+      "import": {
+        "types": "./dist/server/index.d.ts",
+        "default": "./dist/server/index.js"
+      },
+      "require": {
+        "types": "./dist/server/index.d.cts",
+        "default": "./dist/server/index.cjs"
+      }
+    },
+    "./package.json": "./package.json"
+  },
+  "bin": {
+    "mailer-server": "./dist/cli.js"
+  },
+  "files": [
+    "dist"
+  ],
+  "publishConfig": {
+    "registry": "https://npm.pkg.github.com"
+  },
+  "scripts": {
+    "build": "tsup",
+    "dev": "tsup --watch",
+    "typecheck": "tsc --noEmit",
+    "test": "vitest run",
+    "test:watch": "vitest",
+    "start": "node dist/cli.js",
+    "prepare": "npm run build"
+  },
+  "dependencies": {
+    "nodemailer": "^10.0.10"
+  },
+  "peerDependencies": {
+    "bullmq": ">=5",
+    "ioredis": ">=5"
+  },
+  "peerDependenciesMeta": {
+    "bullmq": {
+      "optional": true
+    },
+    "ioredis": {
+      "optional": true
+    }
+  },
+  "devDependencies": {
+    "@types/node": "^24",
+    "@types/nodemailer": "^8.0.2",
+    "@types/smtp-server": "^3.5.13",
+    "bullmq": "^6.3.9",
+    "ioredis": "^6.0.0",
+    "smtp-server": "^3.19.13",
+    "tsup": "^8.5.1",
+    "typescript": "~6.0.2",
+    "vitest": "^5.0.2"
+  }
+}
