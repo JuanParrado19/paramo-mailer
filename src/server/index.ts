@@ -63,6 +63,15 @@ export async function createMailServer(config: ServerConfig, { role = 'all' }: {
     },
   })
 
+  // Comprueba credenciales al arrancar sin bloquear: un fallo sale en los
+  // logs enseguida, no cuando alguien intenta enviar.
+  if (role !== 'api') {
+    mailer.verify().then(
+      () => log.info('transports.verified', { transports: mailer.transportNames }),
+      (err: Error) => log.error('transports.unverified', { message: err.message }),
+    )
+  }
+
   let queue: MailQueue | undefined
   let worker: RedisWorker | undefined
   const logFailed = (job: { id: string; attempts: number; error?: unknown }) =>

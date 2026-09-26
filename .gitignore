@@ -7,3 +7,4 @@ coverage
 !.env.example
 mailer.config.js
 mailer.config.mjs
+*.tgz

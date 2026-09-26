@@ -185,7 +185,7 @@ describe('servidor HTTP', () => {
       const ip = { 'X-Real-IP': '10.0.0.2' }
       const noEmail = await form({ ...valid, email: 'x' }, ip)
       expect(noEmail.status).toBe(400)
-      expect(await noEmail.json()).toMatchObject({ fields: { email: expect.any(String) } })
+      expect(await noEmail.json()).toMatchObject({ error: 'Email must be a valid email address.', fields: { email: expect.any(String) } })
       expect((await form({ ...valid, service: 'Hacking' }, ip)).status).toBe(400)
       expect((await form(valid, { ...ip, Origin: 'https://evil.com' })).status).toBe(403)
 

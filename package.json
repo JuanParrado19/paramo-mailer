@@ -1,6 +1,6 @@
 {
   "name": "@juanparrado19/mailer",
-  "version": "0.1.0",
+  "version": "0.1.1",
   "description": "Librería y servicio de envío de correos reutilizable: transportes intercambiables (SMTP, Resend), plantillas, reintentos, colas (memoria o Redis) y servidor HTTP con API keys y formularios públicos.",
   "license": "UNLICENSED",
   "private": false,

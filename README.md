@@ -310,7 +310,18 @@ caudal hacia el proveedor lo controla el `limiter`, que en Redis es global.
 
 ## Despliegue
 
-- **pm2**, en un servidor propio como botequi: [deploy/ecosystem.config.cjs](deploy/ecosystem.config.cjs)
+- **botequi** (instancia en producción): config y scripts en [deploy/botequi/](deploy/botequi/).
+  Corre en `/var/www/mailer` (pm2 `mailer`, puerto 9005, cola en memoria) y hoy atiende el
+  formulario de rvroxminitrack.com. El servidor no compila ni necesita token de GitHub: se
+  le sube el paquete empaquetado. Para actualizar tras un cambio:
+  ```bash
+  npm run build && npm pack --pack-destination deploy/botequi
+  scp deploy/botequi/{juanparrado19-mailer-*.tgz,mailer.config.mjs,ecosystem.config.cjs,setup.sh}       juanpa@192.168.2.252:/var/www/mailer/
+  ssh -t juanpa@192.168.2.252 'bash /var/www/mailer/setup.sh'
+  ```
+  La contraseña SMTP vive solo en `/var/www/mailer/.smtp-pass` (modo 600); `setup.sh` la pide
+  la primera vez y `setup.sh --password` la cambia. Logs: `pm2 logs mailer`.
+- **pm2**, en otro servidor propio: [deploy/ecosystem.config.cjs](deploy/ecosystem.config.cjs)
   y el bloque de nginx en [deploy/nginx-location.conf](deploy/nginx-location.conf). Deja
   `trustProxy: true` para que el límite por IP use la IP real.
 - **Docker**, con Redis incluido:

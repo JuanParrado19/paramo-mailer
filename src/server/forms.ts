@@ -6,6 +6,9 @@ import { HttpError } from './http.js'
 
 const URL_RE = /^https?:\/\/\S+$/i
 
+/** Etiqueta para errores y para el correo: la configurada o la clave capitalizada. */
+const labelOf = (key: string, field: FieldConfig) => field.label ?? key.charAt(0).toUpperCase() + key.slice(1)
+
 /** Valida los campos declarados; ignora cualquier otro que llegue. */
 export function validateFields(form: FormConfig, data: Record<string, unknown>): Record<string, string> {
   const values: Record<string, string> = {}
@@ -15,7 +18,7 @@ export function validateFields(form: FormConfig, data: Record<string, unknown>):
     const raw = data[key]
     const value = typeof raw === 'string' ? raw.trim() : typeof raw === 'number' ? String(raw) : ''
     const max = field.maxLength ?? (field.type === 'textarea' ? 5000 : 200)
-    const label = field.label ?? key
+    const label = labelOf(key, field)
 
     if (!value) {
       if (field.required) errors[key] = `${label} is required.`
@@ -38,7 +41,6 @@ export function validateFields(form: FormConfig, data: Record<string, unknown>):
   return values
 }
 
-const labelOf = (key: string, field: FieldConfig) => field.label ?? key.charAt(0).toUpperCase() + key.slice(1)
 
 /** Correo por defecto: una tabla con cada campo. */
 export function defaultFormBody(formId: string, form: FormConfig, values: Record<string, string>): TemplateOutput {
