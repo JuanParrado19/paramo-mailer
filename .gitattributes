@@ -1,2 +1,2 @@
-# Los scripts se ejecutan en Linux: con CRLF bash falla ($'': command not found).
+# Los scripts se ejecutan en Linux: con finales CRLF, bash falla al leerlos.
 *.sh text eol=lf
